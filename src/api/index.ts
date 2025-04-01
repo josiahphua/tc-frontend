@@ -1,4 +1,4 @@
-import { Teacher, Class } from "../types";
+import { Teacher, Class } from "@/types";
 
 const API_BASE_URL = "http://localhost:3001/api";
 
@@ -8,7 +8,8 @@ export const api = {
     try {
       const response = await fetch(`${API_BASE_URL}/teachers`);
       if (!response.ok) {
-        throw new Error("Failed to fetch teachers");
+        const errorResponse = await response.json()
+        throw new Error(`Failed to fetch teachers : ${errorResponse.message}`);
       }
       return await response.json();
     } catch (error) {
@@ -26,9 +27,10 @@ export const api = {
         },
         body: JSON.stringify(teacher),
       });
-      
+
       if (!response.ok) {
-        throw new Error("Failed to add teacher");
+        const errorResponse = await response.json()
+        throw new Error(`Failed to add teacher : ${errorResponse.message}`);
       }
       
       return await response.json();
@@ -43,7 +45,8 @@ export const api = {
     try {
       const response = await fetch(`${API_BASE_URL}/classes`);
       if (!response.ok) {
-        throw new Error("Failed to fetch classes");
+        const errorResponse = await response.json()
+        throw new Error(`Failed to fetch classes : ${errorResponse.message}`);
       }
       return await response.json();
     } catch (error) {
@@ -54,16 +57,26 @@ export const api = {
   
   addClass: async (classData: Omit<Class, "id">): Promise<Class | null> => {
     try {
+      // Prepare class data for API based on what's provided
+      const apiClassData = {
+        level: classData.level,
+        name: classData.name,
+        ...(classData.teacherEmail ? { teacherEmail: classData.teacherEmail } : {}),
+        ...(classData.formTeacherId ? { formTeacherId: classData.formTeacherId } : {}),
+        ...(classData.formTeacherName ? { formTeacherName: classData.formTeacherName } : {})
+      };
+      
       const response = await fetch(`${API_BASE_URL}/classes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(classData),
+        body: JSON.stringify(apiClassData),
       });
       
       if (!response.ok) {
-        throw new Error("Failed to add class");
+        const errorResponse = await response.json()
+        throw new Error(`Failed to add class : ${errorResponse.message}`);
       }
       
       return await response.json();

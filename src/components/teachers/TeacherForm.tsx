@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Subject } from "@/types";
+import {Subject, Teacher} from "@/types";
 import { api } from "@/api";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -53,7 +53,7 @@ const TeacherForm = () => {
   const onSubmit = async (data: TeacherFormValues) => {
     setIsSubmitting(true);
     try {
-      const result = await api.addTeacher(data);
+      const result = await api.addTeacher(data as Omit<Teacher, "id">);
       if (result) {
         toast.success("Teacher added successfully");
         navigate("/");

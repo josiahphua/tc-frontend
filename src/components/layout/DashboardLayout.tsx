@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { BookOpen, Users } from "lucide-react";
+import {BookOpen, GraduationCap, Users} from "lucide-react";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -16,9 +16,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link to="/" className="text-xl font-bold text-primary">
+          <div className="flex space-x-24 h-16">
+            <div className="flex items-center space-x-2 text-primary">
+              <GraduationCap size={18}/>
+              <Link to="/" className="text-xl font-bold">
                 School Portal
               </Link>
             </div>

@@ -11,6 +11,7 @@ const ClassTable = ({ classes }: ClassTableProps) => {
       <Table>
         <TableHeader className="table-header">
           <TableRow>
+            <TableHead>#</TableHead>
             <TableHead>Level</TableHead>
             <TableHead>Class Name</TableHead>
             <TableHead>Form Teacher</TableHead>
@@ -19,9 +20,10 @@ const ClassTable = ({ classes }: ClassTableProps) => {
         <TableBody>
           {classes.map((cls) => (
             <TableRow key={cls.id} className="table-row">
+              <TableCell>{cls.id}</TableCell>
               <TableCell>{cls.level}</TableCell>
               <TableCell className="font-medium">{cls.name}</TableCell>
-              <TableCell>{cls.formTeacherName}</TableCell>
+              <TableCell>{cls.formTeacherName || (cls.teacherEmail ? `${cls.teacherEmail}` : 'Not assigned')}</TableCell>
             </TableRow>
           ))}
         </TableBody>

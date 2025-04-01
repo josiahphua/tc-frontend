@@ -14,7 +14,8 @@ const TeachersPage = () => {
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const data = await api.getTeachers();
+        // @ts-expect-error - too many overlapping classes if data is defined
+        const {data} = await api.getTeachers();
         setTeachers(data);
       } catch (error) {
         console.error("Failed to fetch teachers:", error);

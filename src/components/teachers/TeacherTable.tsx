@@ -11,15 +11,17 @@ const TeacherTable = ({ teachers }: TeacherTableProps) => {
       <Table>
         <TableHeader className="table-header">
           <TableRow>
+            <TableHead>#</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Subject</TableHead>
             <TableHead>Email</TableHead>
-            <TableHead>Contact Number</TableHead>
+            <TableHead>Work Contact</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {teachers.map((teacher) => (
             <TableRow key={teacher.id} className="table-row">
+              <TableCell>{teacher.id}</TableCell>
               <TableCell className="font-medium">{teacher.name}</TableCell>
               <TableCell>{teacher.subject}</TableCell>
               <TableCell>{teacher.email}</TableCell>

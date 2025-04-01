@@ -36,7 +36,7 @@ const classFormSchema = z.object({
     errorMap: () => ({ message: "Please select a class level" }),
   }),
   name: z.string().min(1, "Class name is required"),
-  formTeacherId: z.string().min(1, "Form teacher is required"),
+  formTeacherId: z.number().min(1, "Form teacher is required"),
 });
 
 type ClassFormValues = z.infer<typeof classFormSchema>;
@@ -52,14 +52,15 @@ const ClassForm = () => {
     defaultValues: {
       level: undefined,
       name: "",
-      formTeacherId: "",
+      formTeacherId: 1, // Default to the first teacher's ID
     },
   });
   
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const data = await api.getTeachers();
+        // @ts-expect-error - too many overlapping classes if data is defined
+        const {data} = await api.getTeachers();
         setTeachers(data);
       } catch (error) {
         console.error("Failed to fetch teachers:", error);
@@ -75,8 +76,7 @@ const ClassForm = () => {
   const onSubmit = async (data: ClassFormValues) => {
     setIsSubmitting(true);
     
-    // Find the teacher name for the selected formTeacherId
-    const formTeacher = teachers.find(t => t.id === data.formTeacherId);
+    const formTeacher = teachers.find(t => parseInt(t.id) === data.formTeacherId);
     
     if (!formTeacher) {
       toast.error("Selected teacher not found");
@@ -88,8 +88,9 @@ const ClassForm = () => {
       const classData = {
         level: data.level,
         name: data.name,
-        formTeacherId: data.formTeacherId,
-        formTeacherName: formTeacher.name
+        formTeacherId: data.formTeacherId.toString(),
+        formTeacherName: formTeacher.name,
+        teacherEmail: formTeacher.email
       };
       
       const result = await api.addClass(classData);
@@ -186,14 +187,14 @@ const ClassForm = () => {
                         value={field.value ? "teacher-select" : undefined}
                         onValueChange={(value) => {
                           if (value === "") {
-                            form.setValue("formTeacherId", "");
+                            form.setValue("formTeacherId", 1);
                           }
                         }}
                       >
                         <AccordionItem value="teacher-select">
                           <AccordionTrigger className="px-4">
                             {field.value
-                              ? teachers.find((t) => t.id === field.value)?.name || "Select a teacher"
+                              ? teachers.find((t) => parseInt(t.id) === field.value)?.name || "Select a teacher"
                               : "Select a teacher"}
                           </AccordionTrigger>
                           <AccordionContent>
@@ -202,10 +203,10 @@ const ClassForm = () => {
                                 <div
                                   key={teacher.id}
                                   className={`px-4 py-2 cursor-pointer rounded hover:bg-gray-100 ${
-                                    field.value === teacher.id ? "bg-primary/10 text-primary" : ""
+                                    field.value === parseInt(teacher.id) ? "bg-primary/10 text-primary" : ""
                                   }`}
                                   onClick={() => {
-                                    form.setValue("formTeacherId", teacher.id, {
+                                    form.setValue("formTeacherId", parseInt(teacher.id), {
                                       shouldValidate: true,
                                     });
                                   }}
